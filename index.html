@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet' type='text/css'>
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin>
+    </script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+
+    <div id="root">
+
+    </div>
+    <script type="text/babel">
+        function App(){
+            return(
+                <div>
+                    <h1>Your Score <span className="score">0</span></h1>
+                    <h2>Time remaining <span className="time">0</span></h2>
+                    <div className="game">
+                        <div className="hole hole1">
+                            <div className="mole"></div>
+                        </div>
+                        <div className="hole hole2">
+                            <div className="mole"></div>
+                        </div>
+                        <div className="hole hole3">
+                            <div className="mole"></div>
+                        </div>
+                        <div className="hole hole4">
+                            <div className="mole"></div>
+                        </div>
+                        <div className="hole hole5">
+                            <div className="mole"></div>
+                        </div>
+                        <div className="hole hole6">
+                            <div className="mole"></div>
+                        </div>
+                    </div>
+                    <div className="control">
+                        <button onClick={start} className="btncontrol">
+                            StartGame
+                        </button>
+                    </div>
+                </div>
+                
+            )
+        }
+        ReactDOM.render(<App/>,document.getElementById('root'))
+        
+        const holes = document.querySelectorAll('.hole');
+        const scoretext = document.querySelector('.score');
+        const moles = document.querySelectorAll('.mole');
+        let lastHole;
+        let timeUp = false;
+        let score = 0;
+        
+        function randomTime(min,max){
+            return Math.round(Math.random() * (max-min) + min)
+        }
+
+        function randomHole(holes){
+            const i = Math.floor(Math.random() * holes.length);
+            const hole = holes[i];
+            if(hole === lastHole){
+                console.log('trung rooi');
+                return randomHole(holes)
+            }
+            lastHole = hole;
+            return hole;
+        }
+
+        function peepup(){
+            const time = randomTime(100,1000);
+            const hole = randomHole(holes);
+            hole.classList.add('up');
+            setTimeout(()=>{
+                hole.classList.remove('up');
+                if(!timeUp)
+                    peepup()
+            },time)
+        }
+        function start(){
+            scoretext.textContent = 0;
+            timeUp = false;
+            score = 0;
+            peepup();
+            setTimeout(()=> timeUp = true,15000)
+        }
+        function bum(e){
+            if(!e.isTrusted) return;
+            score++;
+            this.parentNode.classList.remove('up');
+            scoretext.textContent = score;
+            console.log(this)
+        }
+        moles.forEach(mole => mole.addEventListener('click',bum));
+    </script>
+</body>
+</html>
