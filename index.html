@@ -17,10 +17,54 @@
     </div>
     <script type="text/babel">
         function App(){
+        const [count,setCount] = React.useState(15);
+        function handleStart(){
+            const timeid = setInterval( () => {
+                setCount(count => count -1)
+                
+            },1000)
+            setTimeout(()=>{
+                clearInterval(timeid);
+            },16000)
+        }
+        function randomTime(min,max){
+            return Math.round(Math.random() * (max-min) + min)
+        }
+
+        function randomHole(holes){
+            const i = Math.floor(Math.random() * holes.length);
+            const hole = holes[i];
+            if(hole === lastHole){
+                console.log('trung rooi');
+                return randomHole(holes)
+            }
+            lastHole = hole;
+            return hole;
+        }
+        function peepup(){
+            const time = randomTime(100,1000);
+            const hole = randomHole(holes);
+            hole.classList.add('up');
+            setTimeout(()=>{
+                hole.classList.remove('up');
+                if(!timeUp)
+                    peepup()
+            },time)
+        }
+        function start(){
+            scoretext.textContent = 0;
+            timeUp = false;
+            score = 0;
+            peepup();
+            setTimeout(()=> timeUp = true,15000);
+            handleStart();
+        }
             return(
                 <div>
-                    <h1>Your Score <span className="score">0</span></h1>
-                    <h2>Time remaining <span className="time">0</span></h2>
+                    <h1>Your Score <span className="score">0/10</span></h1>
+                    <h2>Time remaining <span className="time">{count}</span></h2>
+                    <h2>level <span className="time">1</span></h2>
+
                     <div className="game">
                         <div className="hole hole1">
                             <div className="mole"></div>
@@ -45,52 +89,18 @@
                         <button onClick={start} className="btncontrol">
                             StartGame
                         </button>
-                    </div>
-                </div>
-                
+                    </div>                  
+                </div>     
             )
         }
         ReactDOM.render(<App/>,document.getElementById('root'))
-        
         const holes = document.querySelectorAll('.hole');
         const scoretext = document.querySelector('.score');
         const moles = document.querySelectorAll('.mole');
         let lastHole;
         let timeUp = false;
         let score = 0;
-        
-        function randomTime(min,max){
-            return Math.round(Math.random() * (max-min) + min)
-        }
-
-        function randomHole(holes){
-            const i = Math.floor(Math.random() * holes.length);
-            const hole = holes[i];
-            if(hole === lastHole){
-                console.log('trung rooi');
-                return randomHole(holes)
-            }
-            lastHole = hole;
-            return hole;
-        }
-
-        function peepup(){
-            const time = randomTime(100,1000);
-            const hole = randomHole(holes);
-            hole.classList.add('up');
-            setTimeout(()=>{
-                hole.classList.remove('up');
-                if(!timeUp)
-                    peepup()
-            },time)
-        }
-        function start(){
-            scoretext.textContent = 0;
-            timeUp = false;
-            score = 0;
-            peepup();
-            setTimeout(()=> timeUp = true,15000)
-        }
+        moles.forEach(mole => mole.addEventListener('click',bum));
         function bum(e){
             if(!e.isTrusted) return;
             score++;
@@ -98,7 +108,6 @@
             scoretext.textContent = score;
             console.log(this)
         }
-        moles.forEach(mole => mole.addEventListener('click',bum));
     </script>
 </body>
 </html>
