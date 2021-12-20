@@ -25,7 +25,9 @@
             },1000)
             setTimeout(()=>{
                 clearInterval(timeid);
-            },16000)
+                hero.classList.add('open');
+                setCount(count => count = 15)
+            },15000)
         }
         function randomTime(min,max){
             return Math.round(Math.random() * (max-min) + min)
@@ -58,13 +60,16 @@
             peepup();
             setTimeout(()=> timeUp = true,15000);
             handleStart();
+            hero.classList.remove('open')
         }
             return(
                 <div>
-                    <h1>Your Score <span className="score">0/10</span></h1>
+                    <h1>Your Score <span className="score">0</span>/<span className="score">10</span></h1>
                     <h2>Time remaining <span className="time">{count}</span></h2>
                     <h2>level <span className="time">1</span></h2>
-
+                    <div className="hero">
+                        <h1>You Close</h1> 
+                    </div>
                     <div className="game">
                         <div className="hole hole1">
                             <div className="mole"></div>
@@ -84,6 +89,15 @@
                         <div className="hole hole6">
                             <div className="mole"></div>
                         </div>
+                        <div className="hole hole6">
+                            <div className="mole"></div>
+                        </div>
+                        <div className="hole hole6">
+                            <div className="mole"></div>
+                        </div>
+                        <div className="hole hole6">
+                            <div className="mole"></div>
+                        </div>
                     </div>
                     <div className="control">
                         <button onClick={start} className="btncontrol">
@@ -97,6 +111,8 @@
         const holes = document.querySelectorAll('.hole');
         const scoretext = document.querySelector('.score');
         const moles = document.querySelectorAll('.mole');
+        const hero = document.querySelector('.hero');
+        console.log(hero);
         let lastHole;
         let timeUp = false;
         let score = 0;
